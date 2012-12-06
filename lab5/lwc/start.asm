@@ -10,13 +10,13 @@ global strlen
 extern main
 _start:
 	add 	 esp,4
-	mov	 ecx,esp
+	mov	     ecx,esp
 	sub      esp,4
 	push	 ecx
 	push	 DWORD [esp+4]
 	call	 main
-	mov	 ebx,eax
-	mov	 eax,1
+	mov	     ebx,eax
+	mov	     eax,1
 	int 0x80
 
 read:
