@@ -3,7 +3,7 @@
 all: bcmp 
 
 bcmp: bcmpa.o 
-	gcc -m32 -o bcmo bcmpa.o
+	gcc -m32 -o bcmp bcmpa.o
 
 	
 bcmpa.o: bcmpa.asm

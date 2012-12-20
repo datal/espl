@@ -1,0 +1,12 @@
+%.o: %.c
+	gcc -c -o $@ $<
+
+all: bfix
+
+bfix: pbfix.o diff.o
+
+pbfix.o: pbfix.c diff.h
+diff.o: diff.c diff.h
+
+clean:
+	rm *.o
