@@ -13,13 +13,13 @@ test: decbc encbc testbc
 	fi
 
 decbc: secret-elf-a secret-elf-c
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) -m32 $(CFLAGS) -o $@ $^
 
 encbc: secret-elf-b secret-elf-c
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) -m32 $(CFLAGS) -o $@ $^
 
 testbc: bclib.c
-	$(CC) $(CFLAGS) -o $@ -DTESTBC=1 $^
+	$(CC) -m32 $(CFLAGS) -o $@ -DTESTBC=1 $^
 
 secret-elf-a: decbc.c bclib.h
 secret-elf-b: encbc.c bclib.h

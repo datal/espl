@@ -12,18 +12,18 @@ test: decbc encbc testbc
 		exit 1;\
 	fi
 
-decbc: decbc.o bclib.o
-	$(CC) $(CFLAGS) -o $@ $^
+decbc: secret-elf-a secret-elf-c
+	$(CC) -m32 $(CFLAGS) -o $@ $^
 
-encbc: encbc.o bclib.o
-	$(CC) $(CFLAGS) -o $@ $^
+encbc: secret-elf-b secret-elf-c
+	$(CC) -m32 $(CFLAGS) -o $@ $^
 
 testbc: bclib.c
-	$(CC) $(CFLAGS) -o $@ -DTESTBC=1 $^
+	$(CC) -m32 $(CFLAGS) -o $@ -DTESTBC=1 $^
 
-decbc.o: decbc.c bclib.h
-encbc.o: encbc.c bclib.h
-bclib.o: bclib.c bclib.h
+secret-elf-a: decbc.c bclib.h
+secret-elf-b: encbc.c bclib.h
+secret-elf-c: bclib.c bclib.h
 
 clean:
 	rm -f *.o encbc decbc testbc

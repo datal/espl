@@ -8,8 +8,6 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-
-
 #define BUF_LEN 1024
 static char command[BUF_LEN+1];
 static int argc;
@@ -100,43 +98,74 @@ void run_program() {
   int pid, status;
   static char ststr[8];
   int fd;
-  int fds [2];
-  /* ------------- pipelines--------- */
-  int i;
-  for(i=0; i < argc; i++ ){
-    if( !strcmp(argv[i], "|")){
-      
-    }
+  
+   int flag = 0;
+   char **pointer = argv;
+   while (*pointer) {
+      // father code
+      if (**pointer == '|') {
+	flag = 1;
+	*pointer = NULL;
+	pointer = pointer + 1;
+	int pid;
+	int fd[2];
+	pipe(fd);
+	// Create the first child
+	pid = fork();
+	if (pid == 0) {
+	  // close the input
+	  close( fd[0] );
+	  /* the child that write - open the output */
+	  dup2( fd[1] , 1);
+	  close( fd[1]);
+	  // execute to the process
+	  execvp(argv[0],argv);
+	} 
+	else {
+	  // Create the second child
+	  pid = fork();
+	  if ( pid == 0 ) {
+	    close( fd[1] );
+	    /* the child that read  - opent the input*/
+	    dup2(fd[0], 0);
+	    close(fd[0]);
+	    // execute to the process
+	    execvp(*pointer , pointer);
+	  }		
+	}
+	close( fd[1] );
+	close( fd[0] );
+	waitpid( pid, &status, 0 );
+      }
+      pointer = pointer + 1;
   }
-  pipe(fds);
-  
-  
-  /* TODO: background commands */
-  
-  
-  
-  if((pid=fork())>0) {
+  pid=fork();
+  if ( pid > 0 && flag != 0 ) {
     waitpid(pid, &status, 0);
     sprintf(ststr, "%d", status);
     setenv("?", ststr, 1);
-    /* ----------- input, output redirection------------ */
-  } else if(pid==0) {
-      if(argc >= 3 && !strcmp(argv[argc-2] ,">")){
-	fd = open(argv[argc-1] ,O_WRONLY|O_TRUNC|O_CREAT, 0644);
-	dup2(fds[1],1);
+    
+  } else if( pid == 0 && flag != 0) { 
+    
+    // input, output redirection 
+    if (argc>=3 && !strcmp(argv[argc-2], ">") ){
+	fd = open(argv[argc-1], O_WRONLY|O_TRUNC|O_CREAT, 0644);
+	dup2(fd,1);
 	close(fd);
 	argv[argc-2] = NULL;
 	argc -= 2;
-      }else if(argc >= 3 && !strcmp(argv[argc-2] ,"<")){
-	fd = open(argv[argc-1] , O_RDONLY, 0644);
-	dup2(fds[0],0);
-	close(fd);
-	argv[argc-2] = NULL;
-      }
-      execvp(argv[0], argv);
-      perror(argv[0]); 
-      
-     
+    }
+    if (argc>=3 && !strcmp(argv[argc-2], "<") ){
+	fd = open(argv[argc-1], O_RDONLY);
+	dup2(fd,0);
+	close(fd);	
+	argv[argc-2] = NULL;	
+	argc -= 2;
+    }
+
+    fflush(stderr);
+    execvp(argv[0], argv);
+    perror(argv[0]); /*only if execvp returned an error */
   } else {
     perror(getenv("SHELL")); /* problem while forking, not due to a particular program */
   }
@@ -192,6 +221,4 @@ int main(int _argc, char **_argv) {
 
   return 0;
 }
-    
-
     
