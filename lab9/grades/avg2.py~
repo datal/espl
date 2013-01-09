@@ -1,21 +1,21 @@
 #!/usr/bin/python
 import csv
 import sys
-
-input = file(sys.argv[1])
-avrg = 0
 grades = {}
-numOfSt = 0
-
-print input.next(),
-
+student_numbers = {}
+input = file(sys.argv[1])
+num_of_students = 0
+input.next(),
 for line in input:
+  line = line.strip()
   array = line.split(',')
   try:
-    grades[int(array[2])]+=1
+    grades[array[2]] += 1
   except KeyError:
-    grades[int(array[2])]=1
-
-for grade.num in grades.iteritems():
-  print str(grade.strip()) + str(num) 
- 
+    grades[array[2]] = 1;
+  try:
+    student_numbers[array[2]] += str(array[0])+", "
+  except KeyError:
+    student_numbers[array[2]] = str(array[0])+", "
+for k in grades. iterkeys():
+  print "grade:" + str(k)+", num of students:"+str(grades[k]) + ", students codes:" + student_numbers[k]
