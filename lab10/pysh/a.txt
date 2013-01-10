@@ -1,0 +1,5 @@
+total 12
+-rw-r--r-- 1 datal floppy    0 Jan 10 12:56 a.txt
+-rw-r--r-- 1 datal floppy  418 Jan 10 12:56 a.txt~
+-rwxr-xr-x 1 datal floppy 1815 Jan 10 12:56 pysh
+-rwxr-xr-x 1 datal floppy 1814 Jan 10 12:56 pysh~
