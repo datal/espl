@@ -1,11 +1,98 @@
+<!DOCTYPE html>
 <html>
 <head>
 
 <title> lab11 </title>
+<link rel="stylesheet" type="text/css" href="mystyles.css" media="screen" />
+<script>
+  function usrenameOK(){
+      if (event.keyCode > 47 & event.keyCode < 58){
+	event.returnValue = false;
+      }
+      else{
+	showHint(myForm.username.value);
+      }
+  }
+  
+   function passwordOK(){
+      var x = myForm.pwd.value.charAt(0);
+      if (!(/^[a-zA-Z]/.test(x)) & (x != "")) {
+	alert("First character must be a letter");
+	myForm.pwd.value = "";
+      }
+  }
+  
+  function submitt(){
+      var password = myForm.pwd.value;
+      var username = myForm.username.value;
+      if (username == "") {
+	alert("You need to enter username");
+	return;
+      }
+      if(password == ""){
+	alert("You need to enter password");
+	return;
+      }
+      else if (password.length < 4) {
+	alert("Password must have more than 4 characters");
+	return;
+      }
+      else
+	document.getElementById("afterSubmit").textContent = "You are logged in as: " + username;
+  }
+  
+function showHint(str){
+  var xmlhttp;
+  if (str.length==0){
+  document.getElementById("txtHint").innerHTML="";
+  return;
+  }
+  if (window.XMLHttpRequest){// IE7+,Firefox,Chrome,Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+  else{// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange=function(){
+  if (xmlhttp.readyState==4 && xmlhttp.status==200){
+  document.getElementById("txtHint").innerHTML=xmlhttp.responseText;
+  }
+  }
+  xmlhttp.open("GET","http://www.cs.bgu.ac.il/~datal/suggest.php?q="+str,true);
+  xmlhttp.send();
+}
+  
+</script>
 </head>
 
-<body>
-<p>Hello World!</p>
+<body bgcolor="silver">
+<div id="form">
+  <form name="myForm" method="POST">
+    Username: <input type="text" id="username" name="username" value="" onkeydown="usrenameOK()">
+    Password: <input type="password" id="pwd" name="pwd" value="" onkeyup="passwordOK()">
+  <br>Suggestion: 
+  <div id="txtHint"></div>
+  <br>
+  <input type="button" value="Submit" onclick="submitt()">
+  </form>
+</div>
+
+<hr>
+<u><h1> Tal </h1></u>
+<div id="afterSubmit"></div>
+<div id="image1">
+  <img src="image.jpg" alt="Big Boat" width="304" height="228">
+</div>
+
+
+
+<hr>
+
+
+<div id="image2">
+  <img src="image2.jpg" alt="Big Boat" width="100" height="100">
+</div>
+
 </body>
 
 
